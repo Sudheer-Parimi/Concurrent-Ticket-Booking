@@ -14,9 +14,12 @@ import com.sudheer.ticket_booking.repository.UserRepository;
 import com.sudheer.ticket_booking.constant.BookingStatus;
 import com.sudheer.ticket_booking.constant.TicketStatus;
 import com.sudheer.ticket_booking.dto.CancellationResponseDTO;
+import com.sudheer.ticket_booking.dto.BookingResponseDTO;
+import com.sudheer.ticket_booking.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +35,12 @@ public class BookingController {
     @Autowired private TripRepository tripRepository;
     @Autowired private TicketRepository ticketRepository;
     @Autowired private UserRepository userRepository;
+
+    private final BookingService bookingService;
+
+    public BookingController(BookingService bookingService){
+        this.bookingService = bookingService;
+    }
     
     @PostMapping
     @Transactional
@@ -135,6 +144,12 @@ public class BookingController {
     @GetMapping()
     public List<Booking> getBookings() {
         return bookingRepository.findAll();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BookingResponseDTO>> getUserBookingHistory(@PathVariable Long userId){
+        List<BookingResponseDTO> history = bookingService.getUserBookingHistory(userId);
+        return ResponseEntity.ok(history);
     }
     
     
