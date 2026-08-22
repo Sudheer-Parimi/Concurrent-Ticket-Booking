@@ -29,6 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bookings")
+@CrossOrigin(origins="*")
 
 public class BookingController {
     @Autowired private BookingRepository bookingRepository;
