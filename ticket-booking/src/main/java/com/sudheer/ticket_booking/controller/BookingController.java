@@ -151,6 +151,12 @@ public class BookingController {
         List<BookingResponseDTO> history = bookingService.getUserBookingHistory(userId);
         return ResponseEntity.ok(history);
     }
+
+    @GetMapping("/bookedSeats/{tripId}")
+    public ResponseEntity<List<Integer>> getBookedSeatsOfTrip(@PathVariable Long tripId){
+        List<Integer> booked  = bookingService.getBookedSeats(tripId);
+        return ResponseEntity.ok(booked);
+    }
     
     
 }

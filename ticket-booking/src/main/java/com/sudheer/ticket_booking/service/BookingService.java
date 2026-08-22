@@ -5,7 +5,9 @@ import com.sudheer.ticket_booking.entity.Booking;
 import com.sudheer.ticket_booking.entity.Ticket;
 import com.sudheer.ticket_booking.dto.BookingResponseDTO;
 import com.sudheer.ticket_booking.repository.BookingRepository;
+import com.sudheer.ticket_booking.repository.TicketRepository;
 import com.sudheer.ticket_booking.exception.ResourceNotFoundException;
+import com.sudheer.ticket_booking.constant.TicketStatus;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +17,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
+   private final TicketRepository ticketRepository;
    private final BookingRepository bookingRepository; 
 
-    public BookingService(BookingRepository bookingRepository){
+    public BookingService(BookingRepository bookingRepository, TicketRepository ticketRepository){
         this.bookingRepository = bookingRepository;
+        this.ticketRepository = ticketRepository;
     }
+
 
     @Transactional(readOnly = true)
     public List<BookingResponseDTO> getUserBookingHistory(Long userId){
@@ -44,6 +49,12 @@ public class BookingService {
                 b.getTimestamp()
             );
         }).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Integer> getBookedSeats(Long tripId){
+        return ticketRepository.findAllBookedSeatNumbers(tripId, TicketStatus.ACTIVE);
+        
     }
 
 }
