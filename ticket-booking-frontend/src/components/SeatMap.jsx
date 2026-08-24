@@ -1,19 +1,24 @@
 import react, {useState, useEffect} from 'react';
-import {fetchBookedSeats} from  '../services/apis';
+import {fetchBookedSeats, bookSelectedSeats} from  '../services/apis';
 import './SeatMap.css';
 
-export function SeatMap({tripId = 1}){
+export function SeatMap({tripId = 1, capacity=0}){
 
     const[bookedSeats, setBookedSeats] = useState([]);
     const[selectedSeats, setSelectedSeats] = useState([]);
     const[loading, setLoading] = useState(true);
+    const[isSubmitting, setIsSubmitting] = useState(false);
     const[error, setError] = useState(null);
 
-    const totalSeats = 60;
-
     useEffect(() =>{
+       loadSeats();
+    }, 
+    [tripId]);
+
+    const loadSeats =() =>{
         fetchBookedSeats(tripId).
         then((data) =>{
+            
             setBookedSeats(data);
             setLoading(false);
         })
@@ -22,8 +27,7 @@ export function SeatMap({tripId = 1}){
             setError('Could not connect to springboot backend');
             setLoading(false);
         })
-    }, 
-    [tripId]);
+    }
 
     const toggleSeatSelection = async(seatNum) =>{
         if(bookedSeats.includes(seatNum)) {
@@ -38,10 +42,35 @@ export function SeatMap({tripId = 1}){
         }
     }
 
+    const handleBooking = async() =>{
+        setIsSubmitting(true);
+
+        const bookingData = {
+            userId: 1,
+            tripId: tripId, 
+            seatNumbers: selectedSeats
+        }
+
+        try{
+            await bookSelectedSeats(bookingData);
+            setSelectedSeats([]);
+            loadSeats();
+
+        }
+        catch(err){
+            console.error('Booking Failed! ', err);
+            alert('Failed to place booking. Please try again.')
+        }
+        finally{
+            setIsSubmitting(false);
+        }
+    }
+
     if(loading) return <div>Loading seat layout from backend....</div>
     if(error) return <div style ={{color: 'red'}}>{error}</div>
 
     return(
+        
         <div className ="seat-container">
             <h2>Bus Seat Selection (Trip #{tripId})</h2>
 
@@ -52,7 +81,7 @@ export function SeatMap({tripId = 1}){
             </div>
 
             <div className= "seat-grid">
-                {Array.from({length: totalSeats}, (_, i) => i+1).map((seatNumber) =>{
+                {Array.from({length: capacity}, (_, i) => i+1).map((seatNumber) =>{
                     const isBooked = bookedSeats.includes(seatNumber);
                     const isSelected = selectedSeats.includes(seatNumber);
 
@@ -75,6 +104,20 @@ export function SeatMap({tripId = 1}){
                     );
                    
                 })}
+            </div>
+
+            <div
+                className = "booking-summary"
+            >
+                <p>Selected Seats: {selectedSeats.length  > 0 ?  selectedSeats.join(', ') : 'None'}</p>
+                <button 
+                    disabled= {selectedSeats.length === 0 || isSubmitting}
+                    onClick= {handleBooking}
+                    
+                >
+                   {isSubmitting ? 'Booking...' : `Confirm Booking (${selectedSeats.length}) Seats`} 
+                </button>
+
             </div>
       </div>
     )
