@@ -1,8 +1,8 @@
-import react, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {fetchBookedSeats, bookSelectedSeats} from  '../services/apis';
 import './SeatMap.css';
 
-export function SeatMap({tripId = 1, capacity=0}){
+export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, destination, departureTime, onBookingSuccess}){
 
     const[bookedSeats, setBookedSeats] = useState([]);
     const[selectedSeats, setSelectedSeats] = useState([]);
@@ -52,7 +52,18 @@ export function SeatMap({tripId = 1, capacity=0}){
         }
 
         try{
-            await bookSelectedSeats(bookingData);
+            const response = await bookSelectedSeats(bookingData);
+
+            onBookingSuccess({
+                bookingId: response?.id,
+                seats: selectedSeats,
+                totalPrice: selectedSeats.length * ticketPrice,
+                source,
+                destination,
+                departureTime
+
+            });
+
             setSelectedSeats([]);
             loadSeats();
 
@@ -79,6 +90,10 @@ export function SeatMap({tripId = 1, capacity=0}){
                 <span className="badge occupied">Occupied</span>
                 <span className="badge selected">Selected</span>
             </div>
+
+            {/* <div className="bus-front-indicator">
+                <span> Driver </span>
+            </div> */}
 
             <div className= "seat-grid">
                 {Array.from({length: capacity}, (_, i) => i+1).map((seatNumber) =>{

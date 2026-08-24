@@ -72,7 +72,7 @@ export function TripList({onSelectTrip}){
                         </div>
                         <button
                             className ="select-trip-btn"
-                            onClick={() => onSelectTrip(trip.id, trip.bus.capacity)}
+                            onClick={() => onSelectTrip(trip.id, trip.bus.capacity, trip.ticketPrice, trip.route.source, trip.route.destination, trip.departureTime)}
                         >
                             Select Seats
                         </button>

@@ -19,40 +19,105 @@
   font-weight: bold;
 }
 
-.seat-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
+.badge.available {
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #ccc;
 }
 
-.seat {
-  padding: 12px;
+.badge.occupied,
+.badge.booked {
+  background-color: #ef4444;
+  color: #ffffff;
   border: 1px solid #ccc;
+}
+
+.badge.selected {
+  background-color: #16a34a;
+  color: #ffffff;
+  border: 1px solid #ccc;
+}
+
+/* Container mimicking a bus body */
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 2 seats - Aisle - 2 seats */
+  gap: 12px;
+  max-width: 320px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f4f6f8;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+}
+
+/* Create a center aisle between column 2 and 3 */
+.seat-grid > button:nth-child(4n + 2) {
+  margin-right: 24px;
+}
+
+/* Seat States */
+.seat {
+  padding: 12px 0;
   border-radius: 6px;
+  border: 1px solid #ccc;
   font-weight: bold;
   cursor: pointer;
 }
+.seat.available { background-color: #ffffff; color: #333; }
+.seat.available:hover {
+  border-color: #16a34a;
+  background-color: #f0fdf4;
+  transform: translateY(-2px);
+}
+.seat.selected  { background-color: #2e7d32; color: #fff; }
+.seat.booked    { background-color: #d32f2f; color: #fff; cursor: not-allowed; }
 
-.seat.available {
-  background-color: #e2e8f0;
-  color: #1e293b;
+.bus-front-indicator {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 320px;
+  margin: 0 auto 10px auto;
+  padding-right: 15px;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
 }
 
-.seat.booked {
-  background-color: #ef4444;
-  color: white;
-  cursor: not-allowed;
-}
-
-.seat.selected {
-  background-color: #22c55e;
-  color: white;
-}
 
 .booking-summary {
   background-color: #f8fafc;
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
+}
+
+.booking-summary p {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.booking-summary button {
+  width: 100%;
+  padding: 12px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.booking-summary button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.booking-summary button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
 }
