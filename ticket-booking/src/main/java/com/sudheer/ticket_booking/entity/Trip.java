@@ -30,11 +30,14 @@ public class Trip {
     private double ticketPrice;
     private int availableSeats;
 
-    @ManyToOne
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name="bus_id", nullable=false)
     private Bus bus;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name="route_id", nullable= false)
     private Route route;
 
@@ -66,6 +69,14 @@ public class Trip {
     }
     public void setBus(Bus bus){
         this.bus = bus;
+    }
+
+    public boolean isActive(){
+        return this.active;
+    }
+
+    public void setActive(boolean active){
+        this.active = active;
     }
 
     @PrePersist

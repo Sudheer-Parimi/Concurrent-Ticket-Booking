@@ -7,21 +7,38 @@ import './App.css'
 
 import { SeatMap } from './components/SeatMap';
 import { TripList } from './components/TripList';
-import { BookingConfirmation } from './components/BookingConfirmation'
+import { BookingConfirmation } from './components/BookingConfirmation';
+import { AdminDashboard } from './components/AdminDashboard';
 
 function App() {
 
   const[selectedTrip, setSelectedTrip]= useState(null);
   const[capacity, setCapacity] = useState(0);
   const[bookingDetails, setBookingDetails] = useState(null);
+  const[isAdminView , setIsAdminView] = useState(false);
 
   const handleReset = () =>{
     setBookingDetails(null);
     setSelectedTrip(null);
   }
 
+  if(isAdminView){
+    console.log("khgkhkj");
+    return <AdminDashboard onBack = {() => setIsAdminView(false)} />
+  }
+
   return(
     <div className ="App">
+
+        {/* Admin Toggle Header */}
+        <header style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 20px', background: '#f8fafc' }}>
+          <button 
+            style={{ padding: '6px 12px', cursor: 'pointer', background: '#0f172a', color: 'white', border: 'none', borderRadius: '4px' }}
+            onClick={() => setIsAdminView(true)}
+          >
+            ⚙️ Admin Portal
+          </button>
+        </header>
     
         {/* 1. Booking Confirmation Page */}
 

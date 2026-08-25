@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {fetchBookedSeats, bookSelectedSeats} from  '../services/apis';
 import './SeatMap.css';
 
-export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, destination, departureTime, onBookingSuccess}){
+export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, destination, departureTime, onBookingSuccess, maxSeats = 6}){
 
     const[bookedSeats, setBookedSeats] = useState([]);
     const[selectedSeats, setSelectedSeats] = useState([]);
@@ -38,6 +38,10 @@ export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, des
             setSelectedSeats(selectedSeats.filter(s => s != seatNum));
         }
         else{
+            if(selectedSeats.length >= maxSeats){
+                alert(`You can only select up to ${maxSeats} seats per booking.`);
+                return;
+            }
             setSelectedSeats([...selectedSeats, seatNum]);
         }
     }
@@ -124,13 +128,19 @@ export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, des
             <div
                 className = "booking-summary"
             >
-                <p>Selected Seats: {selectedSeats.length  > 0 ?  selectedSeats.join(', ') : 'None'}</p>
+                <p>
+                    Selected Seats: {selectedSeats.length  > 0 ?  selectedSeats.join(', ') : 'None'}
+                    <small style={{ display: 'block', color: '#64748b', marginTop: '4px' }}>
+                        (Max {maxSeats} seats allowed per booking)
+                    </small>
+                </p>
                 <button 
                     disabled= {selectedSeats.length === 0 || isSubmitting}
                     onClick= {handleBooking}
                     
                 >
                    {isSubmitting ? 'Booking...' : `Confirm Booking (${selectedSeats.length}) Seats`} 
+
                 </button>
 
             </div>

@@ -21,6 +21,9 @@ public class Bus{
     @Column(name="capacity")
     private int capacity;
 
+    @Column(name= "busType")
+    private String busType;
+
     public Bus(){}
 
     public Long getId(){
@@ -45,6 +48,14 @@ public class Bus{
 
     public void setCapacity(int cap){
         this.capacity = cap;
+    }
+
+    public String getBusType(){
+        return this.busType;
+    }
+
+    public void setBusType(String busType){
+        this.busType = busType;
     }
 
 

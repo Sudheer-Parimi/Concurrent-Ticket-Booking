@@ -8,16 +8,17 @@ import com.sudheer.ticket_booking.entity.Trip;
 import com.sudheer.ticket_booking.repository.BusRepository;
 import com.sudheer.ticket_booking.repository.RouteRepository;
 import com.sudheer.ticket_booking.repository.TripRepository;
+
+import com.sudheer.ticket_booking.service.TripService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -32,27 +33,33 @@ public class TripController {
     @Autowired private BusRepository busRepository;
     @Autowired private RouteRepository routeRepository;
 
+    private TripService tripService;
+
+    public TripController(TripService tripService){
+        this.tripService = tripService;
+    }
+
     @PostMapping
-    public Trip createTrip(@RequestBody TripRequestDTO request) {
+    public ResponseEntity<Trip> createTrip(@RequestBody TripRequestDTO request) {
         //TODO: process POST request
-        
-        Bus bus = busRepository.findById(request.getBusId())
-                  .orElseThrow(() -> new RuntimeException("Bus not found"));
-        Route route = routeRepository.findById(request.getRouteId())
-                        .orElseThrow(() -> new RuntimeException("Route not found"));
-
-        Trip trip = new Trip();
-        trip.setBus(bus);
-        trip.setRoute(route);
-        trip.setDepartureTime(request.getDepartureTime());
-        trip.setTicketPrice(request.getTicketPrice());
-
-        return tripRepository.save(trip);
+        Trip trip = tripService.createNewTrip(request);
+        return ResponseEntity.ok(trip);
+       
     }
 
     @GetMapping
     public List<Trip> getAllTrips() {
         return tripRepository.findAll();
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTrip(@PathVariable Long id){
+        if (!tripRepository.existsById(id)) {
+            throw new EntityNotFoundException("Trip with ID " + id + " does not exist.");
+        }
+        tripRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/search")
