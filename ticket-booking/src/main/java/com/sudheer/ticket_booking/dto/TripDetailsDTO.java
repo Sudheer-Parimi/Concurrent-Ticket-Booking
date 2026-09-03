@@ -16,7 +16,7 @@ public class TripDetailsDTO {
     private Trip trip;
     private List<Integer> bookedSeats;
 
-     public TripDetailsDTO() {
+    public TripDetailsDTO() {
     }
 
     public Bus getBus() {

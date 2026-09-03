@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { searchTrips } from '../services/apis';
+import "./SearchTrips.css";
 
 const SearchTrip = ({onSelectTrip}) =>{
 
@@ -27,7 +28,7 @@ const SearchTrip = ({onSelectTrip}) =>{
         setError(null);
         setSearched(true);
 
-        console.log("kdshfhdsb")
+        // console.log("kdshfhdsb")
 
         try{
             const resp = await searchTrips(searchParams);
@@ -49,76 +50,130 @@ const SearchTrip = ({onSelectTrip}) =>{
 
     return (
 
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-            <h2>Find Bus Trips</h2>
+        <div className="search-container">
+            <div className="search-header">
+                <h2 className = "search-title">Find Bus Trips</h2>
+                <p className="search-subtitle">Search active routes and select your preferred seats</p>
+            </div>
+            
             
             {/* Search Form */}
-            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
-                <input
-                    type="text"
-                    name="source"
-                    placeholder="From (Source)"
-                    value={searchParams.source}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="destination"
-                    placeholder="To (Destination)"
-                    value={searchParams.destination}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="date"
-                    name="date"
-                    value={searchParams.date}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit" disabled={loading} >
+
+            <form onSubmit={handleSearch} className="search-form-card">
+                <div className="input-group">
+                    <label className="input-label">From</label>
+                    <input
+                        className="search-input"
+                        type="text"
+                        name="source"
+                        placeholder="Ex: Visakhapatnam"
+                        value={searchParams.source}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                
+                <div className="input-group">
+                    <label className="input-label">To</label>
+                    <input
+                        className="search-input"
+                        type="text"
+                        name="destination"
+                        placeholder="Ex: Hyderabad"
+                        value={searchParams.destination}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                
+                <div className="input-group">
+                    <label className="input-label">Travel Date</label>
+                    <input
+                        className="search-input"
+                        type="date"
+                        name="date"
+                        value={searchParams.date}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                
+                <button 
+                    className="search-button"
+                    type="submit" 
+                    disabled={loading} 
+                >
                     {loading ? 'Searching...' : 'Search Trips'}
                 </button>
             </form>
 
             {/* Error Message */}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+
+            {error && 
+                <div className="error-box">
+                    {error}
+                </div>
+            }
 
             {/* Results Section */}
-            <div>
+
+            <div className="results-container">
                 {searched && trips.length === 0 && !loading && (
-                    <p>No trips found for the selected route and date.</p>
+                    <div className='empty-state'>
+                        <p className= "empty-text">No trips found for the selected route and date.</p>
+                    </div>
+                    
                 )}
 
                 {trips.map((trip) => (
                     <div 
                         key={trip.tripId} 
-                        style={{
-                            border: '1px solid #ccc',
-                            borderRadius: '8px',
-                            padding: '16px',
-                            marginBottom: '15px',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
-                        }}
+                        className ="trip-card"
                     >
-                        <div>
-                            <h3>{trip.bus?.busName || 'Standard Bus'} ({trip.bus?.busType || 'AC Semi-Sleeper'})</h3>
-                            <p><strong>Route:</strong> {trip.route?.source} → {trip.route?.destination}</p>
-                            <p><strong>Departure:</strong> {trip.departureTime || trip.departureDate}</p>
-                            <p><strong>Available Seats:</strong> {trip.availableSeats ?? trip.bus?.totalSeats}</p>
+                        <div className="bus-badge-group">
+                            <h3 className='bus-name'>
+                                {trip.bus?.busName || 'Standard Bus'}
+                            </h3>
+                            <span className='bus-type-tag'>
+                                ({trip.bus?.busType || 'AC Semi-Sleeper'})
+                            </span> 
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                            <h4 style={{ color: '#2e7d32', margin: '0 0 10px 0' }}>₹{trip.fare || trip.price}</h4>
+
+                        <div className='route-row'>
+                            <span className='city-name'>{trip.route?.source}</span> 
+                            <span className='arrow'> ➔ </span>
+                            <span className='city-name'>{trip.route?.destination}</span>
+                        </div>
+
+                        <div className="meta-row">
+                            <p className='meta-text'>
+                                <strong>Departure: </strong>{trip.departureTime || trip.departureDate}
+                            </p>
+                            <span className='dot-separator'>.</span>
+
+                            <p className='meta-text'>
+                                <strong>Available Seats:</strong>{" "}
+                                <span className='available-seats-highlight'>
+                                    {trip.availableSeats ?? trip.bus?.capacity}
+                                </span>
+                            </p>
+                            
+                        </div>
+
+                        <div className='action-column'>
+                            <div className='price-container'>
+                                <span className='price-label'>Fare</span>
+                                <h3 className='price-value'>₹{trip.ticketPrice || trip.price}</h3>
+                            </div>
+
                             <button 
+                                className='select-seat-button'
                                 onClick={() => onSelectTrip(trip)}
-                                style={{ backgroundColor: '#1976d2', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: '4px', cursor: 'pointer' }}
                             >
                                 Select Seats
                             </button>
                         </div>
+
                     </div>
                 ))}
             </div>

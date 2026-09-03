@@ -110,8 +110,6 @@ export const searchTrips = async(tripDetails) => {
 
     const {source, destination, date} = tripDetails;
 
-    console.log("dshfoasldjh")
-
     const params = new URLSearchParams({
         source,
         destination,

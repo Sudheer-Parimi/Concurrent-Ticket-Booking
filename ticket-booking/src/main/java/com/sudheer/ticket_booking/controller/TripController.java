@@ -1,6 +1,7 @@
 package com.sudheer.ticket_booking.controller;
 
 
+import com.sudheer.ticket_booking.constant.TicketStatus;
 import com.sudheer.ticket_booking.dto.TripDetailsDTO;
 import com.sudheer.ticket_booking.dto.TripRequestDTO;
 import com.sudheer.ticket_booking.entity.Bus;
@@ -10,6 +11,7 @@ import com.sudheer.ticket_booking.exception.ResourceNotFoundException;
 import com.sudheer.ticket_booking.repository.BusRepository;
 import com.sudheer.ticket_booking.repository.RouteRepository;
 import com.sudheer.ticket_booking.repository.TripRepository;
+import com.sudheer.ticket_booking.repository.TicketRepository;
 
 import com.sudheer.ticket_booking.service.TripService;
 
@@ -40,9 +42,11 @@ public class TripController {
     @Autowired private RouteRepository routeRepository;
 
     private TripService tripService;
+    private TicketRepository ticketRepository;
 
-    public TripController(TripService tripService){
+    public TripController(TripService tripService, TicketRepository ticketRepository){
         this.tripService = tripService;
+        this.ticketRepository= ticketRepository;
     }
 
     @PostMapping
@@ -72,7 +76,7 @@ public class TripController {
     }
 
     @GetMapping("/search")
-    public List<TripRequestDTO> searchTrips(
+    public List<TripDetailsDTO> searchTrips(
         @RequestParam String source,
         @RequestParam String destination,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
@@ -84,13 +88,18 @@ public class TripController {
         List<Trip> trips = tripRepository.searchTrips(source, destination, startOfDay, endOfDay);
 
         return trips.stream()
-                    .map(t -> new TripRequestDTO(
-                        t.getBus().getId(),
-                        t.getRoute().getId(),
-                        t.getDepartureTime(),
-                        t.getTicketPrice(),
-                        t.getId()
-                    ))
+                    .map((t) -> {
+                        List<Integer> seats = ticketRepository.findAllBookedSeatNumbers(t.getId(), TicketStatus.ACTIVE);
+
+                        TripDetailsDTO tripData = new TripDetailsDTO();
+                        tripData.setBus(t.getBus());
+                        tripData.setRoute(t.getRoute());
+                        tripData.setTrip(t);
+                        tripData.setBookedSeats(seats);
+                        
+                        return tripData;
+                    }
+                    )
                     .collect(Collectors.toList());
 
     }

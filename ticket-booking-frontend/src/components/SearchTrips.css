@@ -1,0 +1,242 @@
+.search-container {
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.search-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search-title {
+    font-size: 28px;
+    color: #1a202c;
+    margin: 0 0 8px 0;
+    font-weight: 700;
+}
+
+.search-subtitle {
+    font-size: 15px;
+    color: #718096;
+    margin: 0;
+}
+
+/* Form Styles */
+.search-form-card {
+    background-color: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    align-items: end;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.search-input {
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e0;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: #1976d2;
+}
+
+.search-button {
+    background-color: #1976d2;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    height: 42px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-button:hover:not(:disabled) {
+    background-color: #1565c0;
+}
+
+.search-button:disabled {
+    background-color: #90caf9;
+    cursor: not-allowed;
+}
+
+/* Error Banner */
+.error-box {
+    background-color: #fff5f5;
+    color: #e53e3e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #feb2b2;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* Results Section */
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e0;
+}
+
+.empty-text {
+    color: #718096;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Trip Cards */
+.trip-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.trip-details {
+    flex: 1 1 300px;
+}
+
+.bus-badge-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.bus-name {
+    margin: 0;
+    font-size: 18px;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.bus-type-tag {
+    background-color: #edf2f7;
+    color: #4a5568;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.route-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 10px;
+}
+
+.city-name {
+    color: #2b6cb0;
+}
+
+.arrow {
+    color: #a0aec0;
+    font-size: 14px;
+}
+
+.meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #718096;
+}
+
+.meta-text {
+    margin: 0;
+}
+
+.dot-separator {
+    color: #cbd5e0;
+}
+
+.available-seats-highlight {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.action-column {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.price-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.price-label {
+    font-size: 12px;
+    color: #a0aec0;
+    text-transform: uppercase;
+}
+
+.price-value {
+    margin: 0;
+    color: #2e7d32;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.select-seat-button {
+    background-color: #1976d2;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.select-seat-button:hover {
+    background-color: #1565c0;
+}
