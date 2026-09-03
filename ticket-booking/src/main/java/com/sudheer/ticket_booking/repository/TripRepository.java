@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface TripRepository extends  JpaRepository<Trip, Long>{
+
+    List<Trip> findByActiveTrue();
+    
     @Modifying
     @Transactional
     @Query("UPDATE Trip t SET t.availableSeats = t.availableSeats- :seatsNeeded  where t.id = :tripId and t.availableSeats >= :seatsNeeded")

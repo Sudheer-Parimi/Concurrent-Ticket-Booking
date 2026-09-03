@@ -1,19 +1,41 @@
 import React, {useState, useEffect} from 'react';
-import {fetchBookedSeats, bookSelectedSeats} from  '../services/apis';
+import {fetchBookedSeats, bookSelectedSeats, getTripDetails} from  '../services/apis';
 import './SeatMap.css';
 
-export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, destination, departureTime, onBookingSuccess, maxSeats = 6}){
+export function SeatMap({tripId =1, onBookingSuccess, maxSeats = 6}){
 
+    const[trip, setTrip] = useState(null);
     const[bookedSeats, setBookedSeats] = useState([]);
     const[selectedSeats, setSelectedSeats] = useState([]);
     const[loading, setLoading] = useState(true);
     const[isSubmitting, setIsSubmitting] = useState(false);
     const[error, setError] = useState(null);
+    
 
     useEffect(() =>{
-       loadSeats();
+      
+       loadTripDetails(tripId);
     }, 
     [tripId]);
+
+    const loadTripDetails = async(tripId) =>{
+
+        try{
+            const response = await getTripDetails(tripId);
+            //console.log("dhfgksdh", response);
+            setTrip(response.trip);
+            setBookedSeats(response.bookedSeats);
+
+        }
+        catch(error){
+            console.error('Error loading the trip Detaails ', error);
+            setError('Could not load trip details fro backend');
+        }
+        finally{
+            setLoading(false);
+        }
+    
+    }
 
     const loadSeats =() =>{
         fetchBookedSeats(tripId).
@@ -61,10 +83,10 @@ export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, des
             onBookingSuccess({
                 bookingId: response?.id,
                 seats: selectedSeats,
-                totalPrice: selectedSeats.length * ticketPrice,
-                source,
-                destination,
-                departureTime
+                totalPrice: selectedSeats.length * trip.ticketPrice,
+                source:trip.route.source,
+                destination: trip.route.destination,
+                departureTime: trip.departureTime
 
             });
 
@@ -100,7 +122,7 @@ export function SeatMap({tripId = 1, capacity=50, ticketPrice = 700, source, des
             </div> */}
 
             <div className= "seat-grid">
-                {Array.from({length: capacity}, (_, i) => i+1).map((seatNumber) =>{
+                {Array.from({length: trip.bus.capacity}, (_, i) => i+1).map((seatNumber) =>{
                     const isBooked = bookedSeats.includes(seatNumber);
                     const isSelected = selectedSeats.includes(seatNumber);
 

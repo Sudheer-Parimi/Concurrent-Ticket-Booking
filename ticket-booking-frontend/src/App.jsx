@@ -7,23 +7,26 @@ import './App.css'
 
 import { SeatMap } from './components/SeatMap';
 import { TripList } from './components/TripList';
+import  SearchTrip from './components/SearchTrips'
 import { BookingConfirmation } from './components/BookingConfirmation';
 import { AdminDashboard } from './components/AdminDashboard';
 
 function App() {
 
-  const[selectedTrip, setSelectedTrip]= useState(null);
+  const[selectedTrip, setSelectedTrip]= useState();
   const[capacity, setCapacity] = useState(0);
   const[bookingDetails, setBookingDetails] = useState(null);
   const[isAdminView , setIsAdminView] = useState(false);
+  const[step, setStep]  = useState('search');  // search | trip select | seatmap
 
   const handleReset = () =>{
     setBookingDetails(null);
     setSelectedTrip(null);
+    setStep('search');
   }
 
   if(isAdminView){
-    console.log("khgkhkj");
+   
     return <AdminDashboard onBack = {() => setIsAdminView(false)} />
   }
 
@@ -42,51 +45,60 @@ function App() {
     
         {/* 1. Booking Confirmation Page */}
 
-        { bookingDetails ? (
-            <BookingConfirmation 
-              bookingData = {bookingDetails}
-              onConfirmation = {handleReset}
-            />
+        {step == 'search' ? (
+          <SearchTrip onSelectTrip= {(trip) => {
+              console.log("jksdfhlsd", trip);
+              setSelectedTrip(trip);
+              setStep('select_seats');
+            }
+          }
+          />
 
           ) :
+         
+          step == 'select_trip' ?
 
-          selectedTrip ? (
-              /* 2. Seat Slection Page */
-          <div>
+          (<TripList onSelectTrip={(trip) => setSelectedTrip(trip)} /> ) :
+
+          step == 'select_seats' ?
+
+          ( <div>
+              <button
+                style={{ margin: '20px', padding: '8px 16px', cursor: 'pointer' }}
+                onClick = {() => {
+                  setStep("search");
+                  setSelectedTrip(null);
+                }}
+
+              >
+                ← Get Back To Trips
+
+              </button>
+
+              <SeatMap tripId = {selectedTrip.tripId} onBookingSuccess={(bookingDetails) => {
+                    setBookingDetails(bookingDetails);
+                    setStep('booking-confirm');
+                  }
+                }
+                maxSeats = {6}
+              
+              />
             
-            <button
-              style={{ margin: '20px', padding: '8px 16px', cursor: 'pointer' }}
-              onClick = {() => {
-                setSelectedTrip(null);
-              }}
 
-            >
-              ← Get Back To Trips
-
-            </button>
-            <SeatMap 
-              tripId = {selectedTrip.id}
-              capacity = {selectedTrip.capacity}
-              ticketPrice={selectedTrip.ticketPrice}
-              source = {selectedTrip.source}
-              destination = {selectedTrip.destination}
-              departureTime = {selectedTrip.departureTime}
-              onBookingSuccess={(details) => setBookingDetails(details)}
-            />
-          </div>
-            
-
+            </div>
+                
           ) :
-      
-          (
-          /* 3. Available Trips Page */
-            <TripList onSelectTrip = {(tripId, capacity, ticketPrice, source, destination, departureTime) => {setSelectedTrip({id: tripId, capacity, ticketPrice, source, destination, departureTime});
-              }}
-            />
-        
-          )
+
+          step == 'booking-confirm' ?
+
+          (<BookingConfirmation bookingData = {bookingDetails} onConfirmation={handleReset}/>) :
+
+          <TripList/>
+
 
         }
+
+        
       
     </div>
   )

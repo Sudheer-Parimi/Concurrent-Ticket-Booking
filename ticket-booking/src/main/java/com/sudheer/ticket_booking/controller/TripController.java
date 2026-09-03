@@ -1,10 +1,12 @@
 package com.sudheer.ticket_booking.controller;
 
 
+import com.sudheer.ticket_booking.dto.TripDetailsDTO;
 import com.sudheer.ticket_booking.dto.TripRequestDTO;
 import com.sudheer.ticket_booking.entity.Bus;
 import com.sudheer.ticket_booking.entity.Route;
 import com.sudheer.ticket_booking.entity.Trip;
+import com.sudheer.ticket_booking.exception.ResourceNotFoundException;
 import com.sudheer.ticket_booking.repository.BusRepository;
 import com.sudheer.ticket_booking.repository.RouteRepository;
 import com.sudheer.ticket_booking.repository.TripRepository;
@@ -12,6 +14,7 @@ import com.sudheer.ticket_booking.repository.TripRepository;
 import com.sudheer.ticket_booking.service.TripService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +25,9 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -48,17 +54,20 @@ public class TripController {
     }
 
     @GetMapping
-    public List<Trip> getAllTrips() {
-        return tripRepository.findAll();
+    public List<Trip> getAllActiveTrips() {
+        return tripRepository.findByActiveTrue();
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTrip(@PathVariable Long id){
-        if (!tripRepository.existsById(id)) {
-            throw new EntityNotFoundException("Trip with ID " + id + " does not exist.");
-        }
-        tripRepository.deleteById(id);
+    @Transactional
+    public ResponseEntity<Void> softDeleteTrip(@PathVariable Long id){
+        
+        Trip trip = tripRepository.findById(id).
+                    orElseThrow(() -> new ResourceNotFoundException("Trip with id #" +id + " not found"));
+        
+        trip.setActive(false);
+        tripRepository.save(trip);
         return ResponseEntity.noContent().build();
     }
 
@@ -79,12 +88,18 @@ public class TripController {
                         t.getBus().getId(),
                         t.getRoute().getId(),
                         t.getDepartureTime(),
-                        t.getTicketPrice()
+                        t.getTicketPrice(),
+                        t.getId()
                     ))
                     .collect(Collectors.toList());
 
     }
-    
 
+    @GetMapping("/getTripDetails/{tripId}")
+    public ResponseEntity<TripDetailsDTO> getTripDetils(@PathVariable Long tripId) {
+        TripDetailsDTO data =  tripService.getTripDetails(tripId);
+        return ResponseEntity.ok(data);
+    }
+    
 
 }

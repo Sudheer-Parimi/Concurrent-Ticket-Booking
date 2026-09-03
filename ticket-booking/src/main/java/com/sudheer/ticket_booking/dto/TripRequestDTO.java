@@ -6,6 +6,7 @@ public class TripRequestDTO {
     
     private Long busId;
     private Long routeId;
+    private Long tripId;
     //Incase if trip is assigned newly with not existing buses and routes
 
     private String newBusNumber;
@@ -18,12 +19,13 @@ public class TripRequestDTO {
     private LocalDateTime departureTime;
     private double ticketPrice;
 
-    public TripRequestDTO(Long busId, Long routeId, LocalDateTime departureTime, double ticketPrice){
+    public TripRequestDTO(Long busId, Long routeId, LocalDateTime departureTime, double ticketPrice, Long tripId){
         this.busId = busId;
         this.routeId = routeId;
 
         this.departureTime= departureTime;
         this.ticketPrice= ticketPrice;
+        this.tripId = tripId;
     }
 
     public Long getBusId(){return this.busId;}
@@ -45,5 +47,8 @@ public class TripRequestDTO {
     public void setNewSource(String newSource) {this.newSource = newSource;}
     public String getNewDestination() {return newDestination;}
     public void setNewDestination(String newDestination) {this.newDestination = newDestination;}
+
+    public Long getTripId(){return tripId;}
+    public void setTripId(Long tripId){this.tripId = tripId;}
         
 }
