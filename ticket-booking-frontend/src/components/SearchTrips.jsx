@@ -24,6 +24,12 @@ const SearchTrip = ({onSelectTrip}) =>{
 
     const handleSearch = async(e) =>{
         e.preventDefault()
+
+        if (searchParams.date < today) {
+            setError("Please select today or a future date.");
+            return;
+        }
+
         setLoading(true);
         setError(null);
         setSearched(true);
@@ -47,6 +53,25 @@ const SearchTrip = ({onSelectTrip}) =>{
             
         }
     }
+
+    const formatDeparture = (dateString) => {
+        if (!dateString) return 'N/A';
+        
+        const date = new Date(dateString);
+        
+        if (isNaN(date.getTime())) return dateString;
+
+        return date.toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
+    const today = new Date().toISOString().split('T')[0];
 
     return (
 
@@ -92,6 +117,7 @@ const SearchTrip = ({onSelectTrip}) =>{
                         className="search-input"
                         type="date"
                         name="date"
+                        min={today}
                         value={searchParams.date}
                         onChange={handleChange}
                         required
@@ -130,45 +156,48 @@ const SearchTrip = ({onSelectTrip}) =>{
                         key={trip.tripId} 
                         className ="trip-card"
                     >
-                        <div className="bus-badge-group">
-                            <h3 className='bus-name'>
-                                {trip.bus?.busName || 'Standard Bus'}
-                            </h3>
-                            <span className='bus-type-tag'>
-                                ({trip.bus?.busType || 'AC Semi-Sleeper'})
-                            </span> 
-                        </div>
+                        <div className='trip-details'>
+                            <div className="bus-badge-group">
+                                <h3 className='bus-name'>
+                                    {trip.bus?.busName || 'Standard Bus'}
+                                </h3>
+                                <span className='bus-type-tag'>
+                                    ({trip.bus?.busType || 'AC Semi-Sleeper'})
+                                </span> 
+                            </div>
 
-                        <div className='route-row'>
-                            <span className='city-name'>{trip.route?.source}</span> 
-                            <span className='arrow'> ➔ </span>
-                            <span className='city-name'>{trip.route?.destination}</span>
-                        </div>
+                            <div className='route-row'>
+                                <span className='city-name'>{trip.route?.source}</span> 
+                                <span className='arrow'> ➔ </span>
+                                <span className='city-name'>{trip.route?.destination}</span>
+                            </div>
 
-                        <div className="meta-row">
-                            <p className='meta-text'>
-                                <strong>Departure: </strong>{trip.departureTime || trip.departureDate}
-                            </p>
-                            <span className='dot-separator'>.</span>
+                            <div className="meta-row">
+                                <p className='meta-text'>
+                                    <strong>Departure: </strong>{formatDeparture(trip.trip?.departureTime || trip.departureDate)}
+                                </p>
+                                <span className='dot-separator'>.</span>
 
-                            <p className='meta-text'>
-                                <strong>Available Seats:</strong>{" "}
-                                <span className='available-seats-highlight'>
-                                    {trip.availableSeats ?? trip.bus?.capacity}
-                                </span>
-                            </p>
-                            
+                                <p className='meta-text'>
+                                    <strong>Available Seats:</strong>{" "}
+                                    <span className='available-seats-highlight'>
+                                        {trip.trip?.availableSeats ?? trip.bus?.capacity}
+                                    </span>
+                                </p>
+                                
+                            </div>
+
                         </div>
 
                         <div className='action-column'>
                             <div className='price-container'>
                                 <span className='price-label'>Fare</span>
-                                <h3 className='price-value'>₹{trip.ticketPrice || trip.price}</h3>
+                                <h3 className='price-value'>₹{trip.trip?.ticketPrice || trip.price}</h3>
                             </div>
 
                             <button 
                                 className='select-seat-button'
-                                onClick={() => onSelectTrip(trip)}
+                                onClick={() => onSelectTrip(trip.trip)}
                             >
                                 Select Seats
                             </button>

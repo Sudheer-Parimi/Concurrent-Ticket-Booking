@@ -12,8 +12,8 @@ export function AdminDashboard({onBack}){
     const [busMode, setBusMode] = useState('EXISTING');
     const [routeMode, setRouteMode] = useState('EXISTING');
 
-    const [busId, setBusId] = useState(null);
-    const [routeId, setRouteId] = useState(null);
+    const [busId, setBusId] = useState('');
+    const [routeId, setRouteId] = useState('');
 
     const [newSource, setNewSource] = useState('');
     const [newDestination, setNewDestination] = useState('');
@@ -58,7 +58,20 @@ export function AdminDashboard({onBack}){
     const handleCreateTrip = async(e) =>{
 
         e.preventDefault();
+
+        //validation check for mandatory selection
+        if (routeMode === 'EXISTING' && !routeId) {
+            alert("Please select an existing route.");
+            return;
+        }
+        if (busMode === 'EXISTING' && !busId) {
+            alert("Please select an existing bus.");
+            return;
+        }
+
         setIsSubmitting(true);
+
+        console.log("bus type ", newBusType);
 
         const tripData = {
            busId: busMode === 'EXISTING' ? Number(busId) : null,
@@ -79,8 +92,8 @@ export function AdminDashboard({onBack}){
             alert("Trip created Successfully");
 
             setNewBusNumber('');
-            setBusId(null);
-            setRouteId(null);
+            setBusId('');
+            setRouteId('');
             setNewSource('');
             setNewDestination('');
             setNewBusType('');
@@ -102,7 +115,9 @@ export function AdminDashboard({onBack}){
 
     const handleDeleteTrip = async(id) =>{
 
-        if(!window.confirm(`Are you sure to delete trip #${id}`)) confirm;
+        if(!window.confirm(`Are you sure to delete trip #${id}`)){
+            return;
+        }
 
         try{
             await deleteTrip(id);
@@ -140,7 +155,7 @@ export function AdminDashboard({onBack}){
                     {routeMode === 'EXISTING' ? (
                     <div className="form-group">
                         <label>Select Route</label>
-                        <select required value={routeId} onChange={(e) => setRouteId(e.target.value)}>
+                        <select required value={routeId} onChange={(e) => {console.log("route id", routeId); setRouteId(e.target.value);}}>
                         <option value="">-- Choose Route --</option>
                         {routes.map((r) => (
                             <option key={r.id} value={r.id}>

@@ -4,6 +4,23 @@ import './BookingConfirmation.css';
 export function BookingConfirmation({bookingData, onConfirmation}){
     const {bookingId, source, destination, seats, totalPrice, departureTime} = bookingData;
 
+    const formatDeparture = (dateString) => {
+        if (!dateString) return 'N/A';
+        
+        const date = new Date(dateString);
+        
+        if (isNaN(date.getTime())) return dateString;
+
+        return date.toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
     return (
         <div className="ticket-card">
             <div className="ticket-header">
@@ -18,7 +35,7 @@ export function BookingConfirmation({bookingData, onConfirmation}){
                 </div>
                 <div className="ticket-row">
                     <span>Departure:</span>
-                    <strong>{departureTime || '10:00 AM'}</strong>
+                    <strong>{formatDeparture(departureTime) || '10:00 AM'}</strong>
                 </div>
                 <div className="ticket-row">
                     <span>Seats Reserved:</span>

@@ -75,7 +75,7 @@ function App() {
 
               </button>
 
-              <SeatMap tripId = {selectedTrip.tripId} onBookingSuccess={(bookingDetails) => {
+              <SeatMap tripId = {selectedTrip.id} onBookingSuccess={(bookingDetails) => {
                     setBookingDetails(bookingDetails);
                     setStep('booking-confirm');
                   }
