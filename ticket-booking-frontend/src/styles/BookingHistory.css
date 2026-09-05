@@ -1,36 +1,170 @@
 .history-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.history-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 8px;
 }
 
 .bookings-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
 .booking-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   padding: 16px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.booking-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Header */
 .booking-header {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #64748b;
+  border-bottom: 1px dashed #e2e8f0;
   padding-bottom: 8px;
   margin-bottom: 12px;
+}
+
+.booking-id {
+  font-weight: 600;
+  color: #334155;
+}
+
+.booking-date {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* Route & Travel Date Section */
+.route-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8fafc;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.route-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.arrow {
+  color: #3b82f6;
   font-weight: bold;
 }
 
+.travel-date {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+/* Details Lines */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.detail-row .amount {
+  color: #059669;
+  font-size: 1rem;
+}
+
+
 .status-badge {
-  color: #2e7d32;
-  background-color: #e8f5e9;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.9em;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.status-badge.confirmed {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.status-badge.cancelled {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.status-badge.pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+/* Empty & State Messages */
+.empty-msg, .error-msg {
+  font-size: 0.9rem;
+  color: #64748b;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.error-msg {
+  color: #ef4444;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #f1f5f9;
+}
+
+.cancel-btn {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

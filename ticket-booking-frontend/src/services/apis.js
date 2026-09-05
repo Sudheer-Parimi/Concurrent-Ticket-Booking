@@ -99,6 +99,23 @@ export const bookSelectedSeats = async(bookingData) => {
     return response.json();
 }
 
+export const cancelBooking = async(id) =>{
+    const response = await fetch(`${BASE_URL}/bookings/${id}/cancel`, {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+        }
+    });
+
+    if(!response.ok){
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to Cancel Booking");
+    }
+
+    return await response.json();
+}
+
 export const createNewTrip = async(tripData) => {
 
     const response = await fetch(`${BASE_URL}/trips`, {
