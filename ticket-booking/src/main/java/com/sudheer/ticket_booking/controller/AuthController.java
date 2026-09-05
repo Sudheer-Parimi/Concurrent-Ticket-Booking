@@ -10,8 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -32,9 +30,16 @@ public class AuthController{
             return ResponseEntity.badRequest().body("Error: User is already registered.");
         }
 
-        String userRole = request.role!=  null && !request.role.isEmpty() ? request.role : "ROLE_USER";
+        String userRole = (request.role != null && !request.role.trim().isEmpty()) 
+                      ? request.role
+                      : "ROLE_USER";
 
-        User user = new User(request.name, request.username, passwordEncoder.encode(request.password), userRole);
+        User user = new User(
+                        request.name, 
+                        request.username, 
+                        passwordEncoder.encode(request.password), 
+                        userRole
+                    );
 
         User savedUser = userRepository.save(user);
 
@@ -57,6 +62,10 @@ public class AuthController{
         }
 
         User user = userOptional.get();
+
+        if (!passwordEncoder.matches(request.password, user.getPassword())) {
+            return ResponseEntity.status(401).body("Invalid Username or Password");
+        }
 
         return ResponseEntity.ok(new AuthResponse(
             user.getId(),

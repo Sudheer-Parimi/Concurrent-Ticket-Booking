@@ -1,5 +1,36 @@
 const BASE_URL = 'http://localhost:8080/api';
 
+export const loginUser = async(credentials) =>{
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(credentials)
+    });
+
+    if(!response.ok){
+        const errorText = await response.text();
+        throw new Error(errorText || "Login Failed");
+    }
+
+    return response.json();
+
+}
+
+export const registerUser = async(credentials) =>{
+    const response = await fetch(`${BASE_URL}/auth/register`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(credentials)
+    });
+
+    if(!response.ok){
+        const errorText = await response.text();
+        throw new Error(errorText || "Registration Failed")
+    }
+
+    return response.json();
+}
+
 export const fetchBookedSeats = async(tripId) =>{
     
     const response = await fetch(`${BASE_URL}/bookings/bookedSeats/${tripId}`);
