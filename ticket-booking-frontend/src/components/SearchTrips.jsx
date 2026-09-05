@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { searchTrips } from '../services/apis';
-import "./SearchTrips.css";
+import "../styles/SearchTrips.css";
 
 const SearchTrip = ({onSelectTrip}) =>{
 
@@ -153,7 +153,7 @@ const SearchTrip = ({onSelectTrip}) =>{
 
                 {trips.map((trip) => (
                     <div 
-                        key={trip.tripId} 
+                        key={trip.trip.id} 
                         className ="trip-card"
                     >
                         <div className='trip-details'>

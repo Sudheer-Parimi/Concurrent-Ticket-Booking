@@ -1,5 +1,5 @@
 import React from 'react';
-import './BookingConfirmation.css';
+import '../styles/BookingConfirmation.css';
 
 export function BookingConfirmation({bookingData, onConfirmation}){
     const {bookingId, source, destination, seats, totalPrice, departureTime} = bookingData;

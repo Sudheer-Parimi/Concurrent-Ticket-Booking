@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { getAllTrips } from "../services/apis";
-import './TripList.css';
+import '../styles/TripList.css';
 
 
 export function TripList({onSelectTrip}){

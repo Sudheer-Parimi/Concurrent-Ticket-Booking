@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {fetchBookedSeats, bookSelectedSeats, getTripDetails} from  '../services/apis';
-import './SeatMap.css';
+import { useAuth } from '../context/AuthContext';
+import '../styles/SeatMap.css';
 
 export function SeatMap({tripId =1, onBookingSuccess, maxSeats = 6}){
 
@@ -10,6 +11,8 @@ export function SeatMap({tripId =1, onBookingSuccess, maxSeats = 6}){
     const[loading, setLoading] = useState(true);
     const[isSubmitting, setIsSubmitting] = useState(false);
     const[error, setError] = useState(null);
+
+    const {user} = useAuth();
     
 
     useEffect(() =>{
@@ -69,10 +72,16 @@ export function SeatMap({tripId =1, onBookingSuccess, maxSeats = 6}){
     }
 
     const handleBooking = async() =>{
+
+        if(!user || !user.id){
+            alert("Please Login to continue booking!")
+            return;
+        }
+
         setIsSubmitting(true);
 
         const bookingData = {
-            userId: 1,
+            userId: user.id,
             tripId: tripId, 
             seatNumbers: selectedSeats
         }

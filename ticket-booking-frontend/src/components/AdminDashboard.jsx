@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { getAllTrips, createNewTrip, deleteTrip, getAllBuses, getAllRoutes} from "../services/apis";
 
-import './AdminDashboard.css';
+import '../styles/AdminDashboard.css';
 
 export function AdminDashboard({onBack}){
 
