@@ -19,7 +19,7 @@ export const BookingHistory = () => {
     try {
       setLoading(true);
       const data = await getUserBookingHistory(user.id);
-      setBookings(data);
+      setBookings(data); 
     } catch (err) {
       console.error("Error fetching history:", err);
       setError(err.message);
@@ -156,7 +156,7 @@ export const BookingHistory = () => {
                         disabled = {cancellingId === bId}
                     >
                         {cancellingId === bId ? 'Cancelling...' : 'Cancel Booking'}
-                    </button>
+                    </button>  
                   )}
                 </div>
 

@@ -1,6 +1,18 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { searchTrips } from '../services/apis';
 import "../styles/SearchTrips.css";
+
+const CITIES = [
+  "Visakhapatnam",
+  "Hyderabad",
+  "Vijayawada",
+  "Bengaluru",
+  "Chennai",
+  "Tirupati",
+  "Guntur",
+  "Kakinada",
+  "Rajahmundry"
+];
 
 const SearchTrip = ({onSelectTrip}) =>{
 
@@ -10,16 +22,71 @@ const SearchTrip = ({onSelectTrip}) =>{
         date: ''
     });
 
+    const[sourceSuggestions, setSourceSuggestions] = useState([]);
+    const[destSuggestions, setDestSuggestions] = useState([]);
+    const[showSourceDropdown, setShowSourceDropdown] = useState(false);
+    const[showDestDropdown, setShowDestDropdown] = useState(false);
+
     const[trips, setTrips] = useState([]);
     const[loading, setLoading] = useState(false);
     const[searched, setSearched] = useState(false);
     const[error, setError] = useState(null);
 
-    const handleChange = (e) => {
+    const wrapperRef = useRef(null);
+
+    const handleSourceChange = (e) => {
+        const sourceVal = e.target.value;
         setSearchParams({
             ...searchParams,
-            [e.target.name] : e.target.value
+            [e.target.name] : sourceVal
         });
+        
+        if(sourceVal.trim()){
+           
+            const filtered = CITIES.filter((city) => city.toLowerCase().includes(sourceVal.toLowerCase()) 
+                                && city.toLowerCase() !== searchParams.destination);
+            setSourceSuggestions(filtered);
+            setShowSourceDropdown(true);
+        }
+        else{
+            setShowSourceDropdown(false);
+        }
+        
+    }
+
+    const handleDestChange = (e) =>{
+        const destVal = e.target.value;
+        setSearchParams({
+            ...searchParams,
+            [e.target.name] : destVal
+        });
+
+        if(destVal.trim()){
+            
+            const filtered = CITIES.filter((city) => city.toLowerCase().includes(destVal.toLowerCase()) 
+                                && city.toLowerCase() != searchParams.source);
+            setDestSuggestions(filtered);
+            setShowDestDropdown(true);
+        }
+        else{
+            setShowDestDropdown(false);
+        }
+    }
+
+    const selectSource = (city) =>{
+        setSearchParams({
+            ...searchParams, 'source': city
+        });
+        setShowSourceDropdown(false);
+        setSourceSuggestions([city]);
+    }
+
+    const selectDestination = (city) => {
+        setSearchParams({
+            ...searchParams, 'destination': city
+        });
+        setShowDestDropdown(false);
+        setDestSuggestions([city]);
     }
 
     const handleSearch = async(e) =>{
@@ -85,7 +152,7 @@ const SearchTrip = ({onSelectTrip}) =>{
             {/* Search Form */}
 
             <form onSubmit={handleSearch} className="search-form-card">
-                <div className="input-group">
+                <div className="autocomplete-group">
                     <label className="input-label">From</label>
                     <input
                         className="search-input"
@@ -93,12 +160,26 @@ const SearchTrip = ({onSelectTrip}) =>{
                         name="source"
                         placeholder="Ex: Visakhapatnam"
                         value={searchParams.source}
-                        onChange={handleChange}
+                        onChange={handleSourceChange}
+                        onFocus={() => searchParams.source && setShowSourceDropdown(true)}
                         required
                     />
+                    {
+                        showSourceDropdown && sourceSuggestions.length > 0 && (
+                            <ul className="suggestions-list">
+                                {sourceSuggestions.map((s,i) => {
+                                    return (
+                                        <li key = {i} onClick = {() => selectSource(s)}>
+                                            {s}
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        )
+                    }
                 </div>
                 
-                <div className="input-group">
+                <div className="autocomplete-group">
                     <label className="input-label">To</label>
                     <input
                         className="search-input"
@@ -106,9 +187,22 @@ const SearchTrip = ({onSelectTrip}) =>{
                         name="destination"
                         placeholder="Ex: Hyderabad"
                         value={searchParams.destination}
-                        onChange={handleChange}
+                        onChange={handleDestChange}
+                        onFocus={() => searchParams.destination && setShowDestDropdown(true)}
                         required
                     />
+                    {showDestDropdown && destSuggestions.length > 0 && (
+                        <ul className="suggestions-list">
+                            {destSuggestions.map((s, i) => {
+                                return(
+                                    <li key = {i} onClick= {() => selectDestination(s)}>
+                                        {s}
+                                    </li>)
+                            })
+                            }
+                        </ul>
+                        
+                    )}
                 </div>
                 
                 <div className="input-group">
@@ -119,7 +213,7 @@ const SearchTrip = ({onSelectTrip}) =>{
                         name="date"
                         min={today}
                         value={searchParams.date}
-                        onChange={handleChange}
+                        onChange={(e) => setSearchParams({...searchParams, [e.target.name]: e.target.value})}
                         required
                     />
                 </div>

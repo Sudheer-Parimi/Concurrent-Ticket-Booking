@@ -30,9 +30,9 @@ public class BookingService {
     public List<BookingResponseDTO> getUserBookingHistory(Long userId){
         List<Booking> bookings = bookingRepository.findByUser_IdOrderByTimestampDesc(userId);
 
-        if(bookings.isEmpty()){
-            throw new ResourceNotFoundException("No Booking History found for this user");
-        }
+        // if(bookings.isEmpty()){
+        //     throw new ResourceNotFoundException("No Booking History found for this user");
+        // }
 
         return bookings.stream().map(b -> {
             List<Integer> seats = b.getTickets().stream().map(Ticket::getSeatNumber).collect(Collectors.toList());

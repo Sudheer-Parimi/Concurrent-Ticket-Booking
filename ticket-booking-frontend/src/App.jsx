@@ -65,7 +65,7 @@ function App() {
 
               ( <div>
                   <button
-                    style={{ margin: '20px', padding: '8px 16px', cursor: 'pointer' }}
+                    className='back-btn'
                     onClick = {() => {
                       setStep("search");
                       setSelectedTrip(null);

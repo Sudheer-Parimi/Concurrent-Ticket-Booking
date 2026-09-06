@@ -55,6 +55,8 @@ export const getTripDetails = async(tripId) => {
 export const getUserBookingHistory = async(userId) => {
     const response = await fetch(`${BASE_URL}/bookings/user/${userId}`);
 
+    console.log("kjsdflad", response);
+
     if(!response.ok){
         throw new Error('Failed to get User History');
         
