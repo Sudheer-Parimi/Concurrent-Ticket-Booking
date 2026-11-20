@@ -2,13 +2,13 @@ package com.sudheer.ticket_booking.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.sudheer.ticket_booking.entity.Ticket;
-import com.sudheer.ticket_booking.entity.User;
+
 import com.sudheer.ticket_booking.constant.BookingStatus;
 
 @Entity
@@ -20,7 +20,7 @@ public class Booking {
     private Long id;
 
     private LocalDateTime timestamp;
-    private double totalAmount;
+    private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
@@ -38,6 +38,8 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private User user;
+
+    private String transactionId;
 
     public Booking(){}
 
@@ -62,10 +64,10 @@ public class Booking {
     public void setTickets(List<Ticket> tickets){
         this.tickets = tickets;
     }
-    public double getTotalAmount(){
+    public BigDecimal getTotalAmount(){
         return totalAmount;
     }
-    public void setTotalAmount(double totalAmount){
+    public void setTotalAmount(BigDecimal totalAmount){
         this.totalAmount=totalAmount;
     }
     public User getUser(){
@@ -80,5 +82,7 @@ public class Booking {
     public void setStatus(BookingStatus status){
         this.status = status;
     }
+    public String getTransactionId(){return transactionId;}
+    public void setTransactionId(String transactionId){this.transactionId= transactionId;}
 
 }

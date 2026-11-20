@@ -1,36 +1,30 @@
 package com.sudheer.ticket_booking.repository;
 
 import com.sudheer.ticket_booking.entity.Trip;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.*;
+
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-import java.util.List;
 
+import jakarta.persistence.LockModeType;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 
-@Repository
-public interface TripRepository extends  JpaRepository<Trip, Long>{
-
+public interface TripRepository extends JpaRepository<Trip, Long>{
     List<Trip> findByActiveTrue();
-    
-    @Modifying
-    @Transactional
-    @Query("UPDATE Trip t SET t.availableSeats = t.availableSeats- :seatsNeeded  where t.id = :tripId and t.availableSeats >= :seatsNeeded")
-    int decrementAvailableSeats(@Param("tripId") Long tripId, @Param("seatsNeeded") int seatsNeeded);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Trip t SET t.availableSeats = t.availableSeats + :seatsCancelled where t.id = :tripId")
-    int incrementAvailableSeats(@Param("tripId") Long tripId, @Param("seatsCancelled") int seatsCancelled);
+    @Lock (LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT t FROM Trip t WHERE t.id = :tripId")
+    Optional<Trip> findByIdForUpdate(@Param("tripId") Long tripId);
 
-    @Query("SELECT t from Trip t "+ "WHERE LOWER(t.route.source) = LOWER(:source) " +
-        "AND LOWER(t.route.destination) = LOWER(:destination) "+
+    @Query("SELECT t from Trip t WHERE LOWER(t.route.source) = LOWER(:source) " +
+        "AND LOWER(t.route.destination) = LOWER(:destination) " +
         "AND t.departureTime >= :startOfDay " +
-        "AND t.departureTime < :endOfDay "+
+        "AND t.departureTime < :endOfDay " +
         "AND t.availableSeats > 0")
     
     List<Trip> searchTrips(
@@ -38,6 +32,26 @@ public interface TripRepository extends  JpaRepository<Trip, Long>{
         @Param("destination") String destination,
         @Param("startOfDay") LocalDateTime startOfDay,
         @Param("endOfDay") LocalDateTime endOfDay
+    );
+
+    boolean existsBySchedule_IdAndDepartureTime(
+        Long scheduleId,
+        LocalDateTime departureTime
+    );
+
+    @Query("""
+            SELECT COUNT(t) > 0
+            FROM Trip t
+            WHERE t.bus.id = :busId
+            AND t.active = true
+            AND t.departureTime < :newArrival
+            AND t.arrivalTime > :newDeparture
+            """)
+
+    boolean existOverlappingTrip(
+        @Param("busId") Long busId,
+        @Param("newDeparture") LocalDateTime newDeparture,
+        @Param("newArrival") LocalDateTime newArrival   
     );
 
 }

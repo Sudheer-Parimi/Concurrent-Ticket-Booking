@@ -34,6 +34,17 @@ const SearchTrip = ({onSelectTrip}) =>{
 
     const wrapperRef = useRef(null);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if(wrapperRef.current && !wrapperRef.current.contains(event.target)){
+                setShowSourceDropdown(false);
+                setShowDestDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    },[]);
+
     const handleSourceChange = (e) => {
         const sourceVal = e.target.value;
         setSearchParams({
@@ -44,7 +55,7 @@ const SearchTrip = ({onSelectTrip}) =>{
         if(sourceVal.trim()){
            
             const filtered = CITIES.filter((city) => city.toLowerCase().includes(sourceVal.toLowerCase()) 
-                                && city.toLowerCase() !== searchParams.destination);
+                                && city.toLowerCase() !== searchParams.destination.toLowerCase());
             setSourceSuggestions(filtered);
             setShowSourceDropdown(true);
         }
@@ -64,7 +75,7 @@ const SearchTrip = ({onSelectTrip}) =>{
         if(destVal.trim()){
             
             const filtered = CITIES.filter((city) => city.toLowerCase().includes(destVal.toLowerCase()) 
-                                && city.toLowerCase() != searchParams.source);
+                                && city.toLowerCase() != searchParams.source.toLowerCase());
             setDestSuggestions(filtered);
             setShowDestDropdown(true);
         }
@@ -142,7 +153,7 @@ const SearchTrip = ({onSelectTrip}) =>{
 
     return (
 
-        <div className="search-container">
+        <div className="search-container" ref={wrapperRef}>
             <div className="search-header">
                 <h2 className = "search-title">Find Bus Trips</h2>
                 <p className="search-subtitle">Search active routes and select your preferred seats</p>

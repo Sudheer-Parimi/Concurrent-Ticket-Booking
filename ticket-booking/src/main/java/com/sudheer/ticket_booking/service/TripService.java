@@ -19,6 +19,7 @@ import com.sudheer.ticket_booking.entity.Trip;
 import com.sudheer.ticket_booking.exception.ResourceNotFoundException;
 import com.sudheer.ticket_booking.dto.TripDetailsDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -70,7 +71,7 @@ public class TripService {
         trip.setBus(bus);
         trip.setRoute(route);
         trip.setDepartureTime(req.getDepartureTime());
-        trip.setTicketPrice(req.getTicketPrice());
+        trip.setTicketPrice(BigDecimal.valueOf(req.getTicketPrice()));
 
         return tripRepository.save(trip);
     }
@@ -82,7 +83,7 @@ public class TripService {
         
         TripDetailsDTO data = new TripDetailsDTO();
 
-        List<Integer> seats = ticketRepository.findAllBookedSeatNumbers(tripId, TicketStatus.ACTIVE);
+        List<Integer> seats = ticketRepository.findAllOccupiedSeatNumbers(tripId);
 
         data.setTrip(trip);
         data.setBus(trip.getBus());

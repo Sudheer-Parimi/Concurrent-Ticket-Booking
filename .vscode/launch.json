@@ -2,13 +2,21 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PasswordEncryptor",
+            "request": "launch",
+            "mainClass": "com.sudheer.ticket_booking.misc.PasswordEncryptor",
+            "projectName": "ticket-booking"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-TicketBookingApplication<ticket-booking>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "com.sudheer.ticket_booking.TicketBookingApplication",
             "projectName": "ticket-booking",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60630 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=ticket-booking"
         }
     ]
 }

@@ -19,11 +19,15 @@ public class Route {
     private String source;
     private String destination;
 
+    @Column(nullable = false)
+    private int estimatedDurationMinutes;
+
     public Route(){}
 
-    public Route(String source, String destination){
+    public Route(String source, String destination, int estimatedDurationMinutes){
         this.source = source;
         this.destination = destination;
+        this.estimatedDurationMinutes = estimatedDurationMinutes;
     }
 
     public Long getId(){
@@ -40,5 +44,16 @@ public class Route {
     }
     public void setDestination(String destination){
         this.destination = destination;
+    }
+
+    public int getEstimatedDurationMinutes(){
+        return estimatedDurationMinutes;
+    }
+
+    public void setEstimatedDurationMinutes(int minutes){
+        if(minutes <= 0){
+            throw new IllegalArgumentException("Journey duration should be positive");
+        }
+        this.estimatedDurationMinutes= minutes;
     }
 }

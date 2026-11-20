@@ -27,8 +27,6 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -89,7 +87,7 @@ public class TripController {
 
         return trips.stream()
                     .map((t) -> {
-                        List<Integer> seats = ticketRepository.findAllBookedSeatNumbers(t.getId(), TicketStatus.ACTIVE);
+                        List<Integer> seats = ticketRepository.findAllOccupiedSeatNumbers(t.getId());
 
                         TripDetailsDTO tripData = new TripDetailsDTO();
                         tripData.setBus(t.getBus());

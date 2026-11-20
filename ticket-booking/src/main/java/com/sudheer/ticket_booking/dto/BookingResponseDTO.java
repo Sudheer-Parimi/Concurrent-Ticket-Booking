@@ -1,5 +1,6 @@
 package com.sudheer.ticket_booking.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.sudheer.ticket_booking.constant.BookingStatus;
@@ -10,7 +11,7 @@ public class BookingResponseDTO {
     private LocalDateTime departureTime;
     private String source;
     private String destination;
-    private double totalPrice;
+    private BigDecimal totalPrice;
     private BookingStatus status;
     private List<Integer> seatNumbers;
     private LocalDateTime bookingTime;
@@ -20,7 +21,7 @@ public class BookingResponseDTO {
     }
 
     public BookingResponseDTO(Long bookingId, Long tripId,  String source, String destination, LocalDateTime departureTime,
-        List<Integer> seatNumbers, double totalPrice, BookingStatus status,  LocalDateTime bookingTime
+        List<Integer> seatNumbers, BigDecimal totalPrice, BookingStatus status,  LocalDateTime bookingTime
     ){
         this.bookingId = bookingId;
         this.tripId = tripId;
@@ -52,8 +53,8 @@ public class BookingResponseDTO {
     public List<Integer> getSeatNumbers() { return seatNumbers; }
     public void setSeatNumbers(List<Integer> seatNumbers) { this.seatNumbers = seatNumbers; }
 
-    public double getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(double totalPrice) { this.totalPrice = totalPrice; }
+    public BigDecimal getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
 
     public BookingStatus getStatus() { return status; }
     public void setStatus(BookingStatus status) { this.status = status; }

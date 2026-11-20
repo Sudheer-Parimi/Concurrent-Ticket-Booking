@@ -1,12 +1,14 @@
 package com.sudheer.ticket_booking.dto;
 
+import java.math.BigDecimal;
+
 public class CancellationResponseDTO {
     private Long bookingId;
     private String status;
-    private double refundAmount;
+    private BigDecimal refundAmount;
     private String message;
 
-    public CancellationResponseDTO(Long bookingId, String status, double refundAmount, String message) {
+    public CancellationResponseDTO(Long bookingId, String status, BigDecimal refundAmount, String message) {
         this.bookingId = bookingId;
         this.status = status;
         this.refundAmount = refundAmount;
@@ -16,6 +18,6 @@ public class CancellationResponseDTO {
     // Getters and Setters
     public Long getBookingId() { return bookingId; }
     public String getStatus() { return status; }
-    public double getRefundAmount() { return refundAmount; }
+    public BigDecimal getRefundAmount() { return refundAmount; }
     public String getMessage() { return message; }
 }

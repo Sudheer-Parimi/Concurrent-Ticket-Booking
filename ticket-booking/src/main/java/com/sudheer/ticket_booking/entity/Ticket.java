@@ -2,17 +2,15 @@ package com.sudheer.ticket_booking.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.sudheer.ticket_booking.entity.User;
-import com.sudheer.ticket_booking.entity.Trip;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sudheer.ticket_booking.entity.Booking;
 import com.sudheer.ticket_booking.constant.TicketStatus;
 
 @Entity
-@Table(name="tickets")
+@Table(name="tickets", indexes = {
+    @Index(name = "idx_ticket_trip_status_seat", columnList = "trip_id,status,seat_number"),
+    @Index(name = "idx_ticket_status_expiry", columnList = "status,expires_at")
+})
 public class Ticket {
     
     @Id
@@ -24,6 +22,9 @@ public class Ticket {
     @Enumerated(EnumType.STRING)
     private TicketStatus status;
 
+    @Column(name = "expiresAt")
+    private LocalDateTime expiresAt;
+
     @ManyToOne
     @JoinColumn(name="trip_id", nullable=false)
     private Trip trip;
@@ -33,35 +34,16 @@ public class Ticket {
     @JsonBackReference
     private Booking booking;
 
-    public Ticket(){
-
-    }
-
-    public Long getId(){
-        return id;
-    }
-    public int getSeatNumber(){
-        return seatNumber;
-    }
-    public void setSeatNumber(int seatNumber){
-        this.seatNumber = seatNumber;
-    }
-    public Trip getTrip(){
-        return trip;
-    }
-    public void setTrip(Trip trip){
-        this.trip = trip;
-    }
-    public Booking getBooking(){
-        return booking;
-    }
-    public void setBooking(Booking booking){
-        this.booking = booking;
-    }
-    public TicketStatus getStatus(){
-        return status;
-    }
-    public void setStatus(TicketStatus status){
-        this.status = status;
-    }
+    public Ticket(){}
+    public Long getId(){ return id; }
+    public int getSeatNumber(){ return seatNumber; }
+    public void setSeatNumber(int seatNumber){ this.seatNumber=seatNumber; }
+    public Trip getTrip(){ return trip; }
+    public void setTrip(Trip trip){ this.trip=trip; }
+    public Booking getBooking(){ return booking; }
+    public void setBooking(Booking booking){ this.booking=booking; }
+    public TicketStatus getStatus(){ return status; }
+    public void setStatus(TicketStatus status){ this.status=status; }
+    public LocalDateTime getExpiresAt(){ return expiresAt; }
+    public void setExpiresAt(LocalDateTime expiresAt){ this.expiresAt=expiresAt; }
 }

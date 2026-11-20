@@ -1,5 +1,13 @@
 const BASE_URL = 'http://localhost:8080/api';
 
+const authHeaders = (json = true) => {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const headers = {};
+    if (json) headers['Content-Type'] = 'application/json';
+    if (user?.token) headers['Authorization'] = `Bearer ${user.token}`;
+    return headers;
+};
+
 export const loginUser = async(credentials) =>{
     const response = await fetch(`${BASE_URL}/auth/login`, {
         method:'POST',
@@ -53,7 +61,9 @@ export const getTripDetails = async(tripId) => {
 }
 
 export const getUserBookingHistory = async(userId) => {
-    const response = await fetch(`${BASE_URL}/bookings/user/${userId}`);
+    const response = await fetch(`${BASE_URL}/bookings/user/${userId}`, {headers: authHeaders(false)});
+
+    console.log("kjdsflsjd", userId);
 
     console.log("kjsdflad", response);
 
@@ -88,9 +98,7 @@ export const getAllRoutes = async () => {
 export const bookSelectedSeats = async(bookingData) => {
     const response = await fetch(`${BASE_URL}/bookings`, {
         method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
+        headers:authHeaders(),
         body: JSON.stringify(bookingData)
     });
 
@@ -104,10 +112,7 @@ export const bookSelectedSeats = async(bookingData) => {
 export const cancelBooking = async(id) =>{
     const response = await fetch(`${BASE_URL}/bookings/${id}/cancel`, {
         method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'Accept':'application/json'
-        }
+        headers:{...authHeaders(), 'Accept':'application/json'}
     });
 
     if(!response.ok){
@@ -122,9 +127,7 @@ export const createNewTrip = async(tripData) => {
 
     const response = await fetch(`${BASE_URL}/trips`, {
         method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
+        headers: authHeaders(),
         body: JSON.stringify(tripData),
   
     });
@@ -139,8 +142,8 @@ export const createNewTrip = async(tripData) => {
 export const deleteTrip = async(tripId) => {
     console.log("sdkhflsh");
     const response = await fetch(`${BASE_URL}/trips/${tripId}`, {
-        method: 'DELETE'
-        
+        method: 'DELETE',
+        headers: authHeaders(false)
     })
     console.log("dhfkshdfksd", response);
 
